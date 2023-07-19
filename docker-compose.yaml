@@ -1,0 +1,31 @@
+version: "3.8"
+
+services:
+  backend-core:
+    build: .
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    command: python manage.py runserver 0.0.0.0:8000
+    container_name: backend-core
+    env_file:
+      - envs/local/backend-core/backend-core.env
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15.1-bullseye
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    ports:
+      - "5432:5432"
+    container_name: db
+    environment:
+      PGTZ: 'Europe/Warsaw'
+      TZ: 'Europe/Warsaw'
+    env_file:
+      - envs/local/db/db.env
+
+volumes:
+  postgres_data:
